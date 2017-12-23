@@ -16,8 +16,13 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.views.generic.base import TemplateView
+from backend import views as backend_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name='index.html')),
+
+    url(r'^user/register_login/$', backend_views.Register_Login, name='Register_Login'),
+    url(r'^user/logout/$', backend_views.Logout, name='Logout'),
+    url(r'^user/list/$', backend_views.User_List, name='User_List'),
 ]
