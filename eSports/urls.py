@@ -22,7 +22,33 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name='index.html')),
 
+    # user_info
     url(r'^user/register_login/$', backend_views.Register_Login, name='Register_Login'),
     url(r'^user/logout/$', backend_views.Logout, name='Logout'),
     url(r'^user/list/$', backend_views.User_List, name='User_List'),
+    url(r'^user/add/$', backend_views.Add_User, name='Add_User'),
+    url(r'^user/delete/$', backend_views.Delete_User, name='Delete_User'),
+    url(r'^user/search/$', backend_views.Search_User, name='Search_User'),
+    url(r'^user/alter/$', backend_views.Alter_User, name='Alter_User'),
+
+    # esport_info
+    url(r'^esport/list/$', backend_views.ESport_List, name='ESport_List'),
+    url(r'^esport/add/$', backend_views.Add_ESport, name='Add_ESport'),
+    url(r'^esport/delete/$', backend_views.Delete_ESport, name='Delete_ESport'),
+    url(r'^esport/search/$', backend_views.Search_ESport, name='Search_ESport'),
+    url(r'^esport/alter/$', backend_views.Alter_ESport, name='Alter_ESport'),
+
+    # league_info & league_result
+    url(r'^league/list/$', backend_views.League_List, name='League_List'),
+    url(r'^league/add/$', backend_views.Add_League, name='Add_League'),
+    url(r'^league/delete/$', backend_views.Delete_League, name='Delete_League'),
+    url(r'^league/search/$', backend_views.Search_League, name='Search_League'),
+    url(r'^league/alter/$', backend_views.Alter_League, name='Alter_League'),
+
+    # game_info
+    url(r'^game/list/$', backend_views.Game_List, name='Game_List'),
+    url(r'^game/add/$', backend_views.Add_Game, name='Add_Game'),
+    url(r'^game/delete/$', backend_views.Delete_Game, name='Delete_Game'),
+    url(r'^game/search/$', backend_views.Search_Game, name='Search_Game'),
+    url(r'^game/alter/$', backend_views.Alter_Game, name='Alter_Game'),
 ]

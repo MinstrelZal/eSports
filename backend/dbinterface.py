@@ -3,7 +3,7 @@ import pymysql
 
 db = pymysql.connect('localhost', 'root', '20121513zal', 'esports')
 cursor = db.cursor()
-#db.set_charset('utf8')
+db.set_charset('utf8')
 
 # ------------------------------ Create Tables ----------------------------------
 # by MinstrelZal
@@ -417,7 +417,7 @@ def Search_League(name):
     return leaguelist
 
 def Alter_League(league_id, name, begin_time, end_time):
-    sql = 'UPDATE league_info SET name="%s",begin_time="%s",end_time="%s" WHERE id=%d;' % league_id
+    sql = 'UPDATE league_info SET name="%s",begin_time="%s",end_time="%s" WHERE id=%d;' % (name, begin_time, end_time, league_id)
     try:
         cursor.execute(sql)
         db.commit()
@@ -488,7 +488,7 @@ def Search_League_Result(league_id, esport_id):
         return 1
     return result[0]
 
-def Alter_League_Result(league_id, esport_id):
+def Alter_League_Result(league_id, esport_id, result):
     sql = 'UPDATE league_result SET result="%s" WHERE league_id=%d AND esport_id=%d;' % (result, league_id, esport_id)
     try:
         cursor.execute(sql)
@@ -554,8 +554,8 @@ def Search_Game(name):
     print(gamelist)
     return gamelist
 
-def Alter_Game(game_id, name, location, league_id, result):
-    sql = 'UPDATE game_info SET name="%s",location="%s",league_id=%d,result="%s" WHERE id=%d;' % game_id
+def Alter_Game(game_id, name, time, location, league_id, result):
+    sql = 'UPDATE game_info SET name="%s",time="%s",location="%s",league_id=%d,result="%s" WHERE id=%d;' % (name, time, location, league_id, result, game_id)
     try:
         cursor.execute(sql)
         db.commit()
