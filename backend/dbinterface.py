@@ -586,3 +586,365 @@ def Game_List():
 
 #init(db, cursor)
 
+# ---------------------------- club_info & club_esport---------------------------------
+# by HUHU
+# 2017-12-23
+def Add_Club(name, sponsor, achievement, setup_time, founder):
+    sql = 'SELECT id FROM club_info WHERE name="%s";' % name
+    try:
+        cursor.execute(sql)
+        if(cursor.rowcount == 1):
+            print('该俱乐部信息已登记')
+            return 1
+    except:
+        print('Error: Unable to select from club_info')
+        return 1
+    sql = 'INSERT INTO club_info (name, sponsor, achievement, setup_time, founder) VALUES ("%s", "%s", "%s", "s", "%s");' % (name, sponsor, achievement, setup_time, founder)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print("添加俱乐部信息成功")
+    except:
+        db.rollback()
+        print('Error: Unable to insert into club_info')
+        return 1
+    return 0
+
+def Add_Club_Esport(club_id,esport_id):
+    sql = 'SELECT club_id FROM club_esport WHERE club_id=%d;' % club_id
+    try:
+        cursor.execute(sql)
+    except:
+        print('Error: Unable to select from club_esport')
+        return 1
+    sql = 'INSERT INTO club_esport (club_id,esport_id) VALUES (%d, %d);' % (club_id,esport_id)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print("添加俱乐部涉及项目记录成功")
+    except:
+        db.rollback()
+        print('Error: Unable to insert into club_esport')
+        return 1
+    return 0
+
+def Delete_Club(club_id):
+    sql = 'DELETE FROM club_info WHERE id=%d;' % club_id
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print('删除俱乐部信息成功')
+    except:
+        db.rollback()
+        print('Error: Unable to delete from club_info')
+        return 1
+    return 0
+
+def Delete_Club_Esport(club_id,esport_id):
+    sql = 'DELETE FROM club_esport WHERE club_id=%d AND esport_id= %d;' % (club_id,esport_id)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print('删除俱乐部涉及项目信息成功')
+    except:
+        db.rollback()
+        print('Error: Unable to delete from club_esport')
+        return 1
+    return 0
+
+def Search_Club(name):
+    sql = 'SELECT * FROM club_info WHERE name REGEXP "%s";' % name
+    try:
+        cursor.execute(sql)
+        result = cursor.fetchall()
+    except:
+        print('Error: Unable to select from club_info')
+        return 1
+    print('查询俱乐部信息成功')
+    clublist = []
+    fields = ('id', 'name', 'sponsor', 'achievement', 'setup_time','founder')
+    for row in result:
+        row = dict(zip(fields, row))
+        clublist.append(row)
+    print(clublist)
+    return clublist
+
+def Search_Club_Esport(name):
+    sql = 'SELECT * FROM club_esport WHERE club_id REGEXP %d;' % club_id
+    try:
+        cursor.execute(sql)
+        result = cursor.fetchall()
+    except:
+        print('Error: Unable to select from club_esport')
+        return 1
+    print('查询俱乐部涉及项目成功')
+    club_esportlist = []
+    fields = ('club_id', 'esport_id')
+    for row in result:
+        row = dict(zip(fields, row))
+        club_esportlist.append(row)
+    print(club_esportlist)
+    return club_esportlist
+
+def Alter_Club(club_id, name, sponsor, achievement, setup_time, founder):
+    sql = 'UPDATE club_info SET name="%s",sponsor="%s",achievement="%s",setup_time="%s",founder = "%s" WHERE id=%d;' % (name, sponsor, achievement, setup_time, founder,club_id)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print('编辑俱乐部信息成功')
+    except:
+        db.rollback()
+        print('Error: Unable to update club_info')
+        return 1
+    return 0
+
+def Club_List():
+    sql = 'SELECT * FROM club_info;'
+    try:
+        cursor.execute(sql)
+        result = cursor.fetchall()
+    except:
+        print('Error: Unable to select from club_info')
+        return 1
+    print('获取俱乐部信息列表成功')
+    clublist = []
+    fields = ('id', 'name', 'sponsor', 'achievement', 'setup_time','founder')
+    for row in result:
+        row = dict(zip(fields, row))
+        clublist.append(row)
+    print(clublist)
+    return clublist
+
+
+# ---------------------------- team_info ---------------------------------
+# by HUHU
+# 2017-12-23
+def Add_Team(name, coach, achievement, club_id, esport_id):
+    sql = 'SELECT id FROM team_info WHERE name="%s";' % name
+    try:
+        cursor.execute(sql)
+        if(cursor.rowcount == 1):
+            print('该队伍信息已登记')
+            return 1
+    except:
+        print('Error: Unable to select from team_info')
+        return 1
+    sql = 'INSERT INTO team_info (name, coach, achievement, club_id, esport_id) VALUES ("%s", "%s", "%s", %d, %d);' % (name, coach, achievement, club_id, esport_id)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print("添加队伍信息成功")
+    except:
+        db.rollback()
+        print('Error: Unable to insert into team_info')
+        return 1
+    return 0
+
+def Delete_Team(team_id):
+    sql = 'DELETE FROM team_info WHERE id=%d;' % team_id
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print('删除队伍信息成功')
+    except:
+        db.rollback()
+        print('Error: Unable to delete from team_info')
+        return 1
+    return 0
+
+def Search_Team(name):
+    sql = 'SELECT * FROM team_info WHERE name REGEXP "%s";' % name
+    try:
+        cursor.execute(sql)
+        result = cursor.fetchall()
+    except:
+        print('Error: Unable to select from team_info')
+        return 1
+    print('查询队伍信息成功')
+    teamlist = []
+    fields = ('id', 'name', 'coach', 'achivement', 'club_id','esport_id')
+    for row in result:
+        row = dict(zip(fields, row))
+        teamlist.append(row)
+    print(teamlist)
+    return teamlist
+
+def Alter_Team(team_id, name, coach, achievement, club_id, esport_id):
+    sql = 'UPDATE team_info SET name="%s",coach ="%s",achievement = "%s", club_id = %d, esport = %d WHERE id=%d;' % (name, coach, achievement, club_id, esport_id,team_id)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print('编辑队伍信息成功')
+    except:
+        db.rollback()
+        print('Error: Unable to update team_info')
+        return 1
+    return 0
+
+def Team_List():
+    sql = 'SELECT * FROM team_info;'
+    try:
+        cursor.execute(sql)
+        result = cursor.fetchall()
+    except:
+        print('Error: Unable to select from team_info')
+        return 1
+    print('获取队伍信息列表成功')
+    teamlist = []
+    fields = ('id', 'name', 'coach', 'achivement', 'club_id','esport_id')
+    for row in result:
+        row = dict(zip(fields, row))
+        teamlist.append(row)
+    print(teamlist)
+    return teamlist
+
+
+
+# ---------------------------- player_info ---------------------------------
+# by HUHU
+# 2017-12-23
+def Add_Player(game_id, name, gender, achievement, team_id):
+    sql = 'SELECT id FROM club_info WHERE name="%s";' % name
+    try:
+        cursor.execute(sql)
+        if(cursor.rowcount == 1):
+            print('该选手信息已登记')
+            return 1
+    except:
+        print('Error: Unable to select from player_info')
+        return 1
+    sql = 'INSERT INTO player_info (game_id, name, gender, achievement, team_id) VALUES (%d, "%s", "%s", "%s",%d);' % (game_id, name, gender, achievement, team_id)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print("添加选手信息成功")
+    except:
+        db.rollback()
+        print('Error: Unable to insert into player_info')
+        return 1
+    return 0
+
+def Delete_Player(player_id):
+    sql = 'DELETE FROM plater_info WHERE id=%d;' % player_id
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print('删除选手信息成功')
+    except:
+        db.rollback()
+        print('Error: Unable to delete from player_info')
+        return 1
+    return 0
+
+def Search_Player(name):
+    sql = 'SELECT * FROM player_info WHERE name REGEXP "%s";' % name
+    try:
+        cursor.execute(sql)
+        result = cursor.fetchall()
+    except:
+        print('Error: Unable to select from player_info')
+        return 1
+    print('查询选手信息成功')
+    playerlist = []
+    fields = ('id', 'game_id','name', 'gender', 'achivement', 'team_id')
+    for row in result:
+        row = dict(zip(fields, row))
+        playerlist.append(row)
+    print(playerlist)
+    return playerlist
+
+def Alter_Player(player_id, game_id, name, gender, achievement, team_id):
+    sql = 'UPDATE player_info SET game_id=%d , name = "%s",gender = "%s" , achievement = "%s" , team_id = %d WHERE id=%d;' % (game_id, name, gender, achievement, team_id, player_id)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print('编辑选手信息成功')
+    except:
+        db.rollback()
+        print('Error: Unable to update player_info')
+        return 1
+    return 0
+
+def Player_List():
+    sql = 'SELECT * FROM player_info;'
+    try:
+        cursor.execute(sql)
+        result = cursor.fetchall()
+    except:
+        print('Error: Unable to select from player_info')
+        return 1
+    print('获取选手信息列表成功')
+    playerlist = []
+    fields = ('id', 'game_id','name', 'gender', 'achivement', 'team_id')
+    for row in result:
+        row = dict(zip(fields, row))
+        playerlist.append(row)
+    print(playerlist)
+    return playerlist
+
+
+
+# ---------------------------- game_competitor_info ---------------------------------
+# by HUHU
+# 2017-12-23
+def Add_Game_Competitor(game_id, team_id, player_game_id, self):
+    sql = 'SELECT id FROM game_competitor_info WHERE game_id = %d;' % game_id
+    try:
+        cursor.execute(sql)
+        if(cursor.rowcount == 1):
+            print('该比赛参赛信息记录已登记')
+            return 1
+    except:
+        print('Error: Unable to select from game_competitor_info')
+        return 1
+    sql = 'INSERT INTO game_competitor_info (game_id, team_id, player_game_id, self) VALUES (%d, %d, %d, %d);' % (game_id, team_id, player_game_id, self)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print("添加比赛参赛信息记录成功")
+    except:
+        db.rollback()
+        print('Error: Unable to insert into game_competitor_info')
+        return 1
+    return 0
+
+def Delete_Game_Competitor(game_id):
+    sql = 'DELETE FROM game_competitor_info WHERE game_id=%d;' % game_id
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print('删除比赛参赛信息记录成功')
+    except:
+        db.rollback()
+        print('Error: Unable to delete from game_competitor_info')
+        return 1
+    return 0
+
+def Search_Game_Competitor(game_id):
+    sql = 'SELECT * FROM game_competitor_info WHERE game_id REGEXP %d;' % game_id
+    try:
+        cursor.execute(sql)
+        result = cursor.fetchall()
+    except:
+        print('Error: Unable to select from game_competitor_info')
+        return 1
+    print('查询比赛参赛信息成功')
+    game_competitorlist = []
+    fields = ('game_id', 'team_id','player_game_id', 'self')
+    for row in result:
+        row = dict(zip(fields, row))
+        game_competitorlist.append(row)
+    print(game_competitorlist)
+    return game_competitorlist
+
+def Alter_Game_Competitor(game_id, team_id, player_game_id, self):
+    sql = 'UPDATE game_competitor_info SET team_id=%d,player=%d,self=%d WHERE game_id=%d;' % (game_id,team_id,player_game_id,game_id)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print('编辑比赛参赛信息成功')
+    except:
+        db.rollback()
+        print('Error: Unable to update game_competitor_info')
+        return 1
+    return 0
