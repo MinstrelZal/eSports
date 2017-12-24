@@ -44,6 +44,11 @@ urlpatterns = [
     url(r'^league/delete/$', backend_views.Delete_League, name='Delete_League'),
     url(r'^league/search/$', backend_views.Search_League, name='Search_League'),
     url(r'^league/alter/$', backend_views.Alter_League, name='Alter_League'),
+    url(r'^league/result/list/$', backend_views.League_Result_List, name='League_Result_List'),
+    url(r'^league/result/add/$', backend_views.Add_League_Result, name='Add_League_Result'),
+    url(r'^league/result/delete/$', backend_views.Delete_League_Result, name='Delete_League_Result'),
+    url(r'^league/result/search/$', backend_views.Search_League_Result, name='Search_League_Result'),
+    url(r'^league/result/alter/$', backend_views.Alter_League_Result, name='Alter_League_Result'),
 
     # game_info
     url(r'^game/list/$', backend_views.Game_List, name='Game_List'),
@@ -51,4 +56,18 @@ urlpatterns = [
     url(r'^game/delete/$', backend_views.Delete_Game, name='Delete_Game'),
     url(r'^game/search/$', backend_views.Search_Game, name='Search_Game'),
     url(r'^game/alter/$', backend_views.Alter_Game, name='Alter_Game'),
+
+    # club_info
+    url(r'^club/list/$', backend_views.Club_List, name='Club_List'),
+    url(r'^club/add/$', backend_views.Add_Club, name='Add_Club'),
+    url(r'^club/delete/$', backend_views.Delete_Club, name='Delete_Club'),
+    url(r'^club/search/$', backend_views.Search_Club, name='Search_Club'),
+    url(r'^club/alter/$', backend_views.Alter_Club, name='Alter_Club'),
+
+    # team_info
+    url(r'^team/list/$', backend_views.Team_List, name='Team_List'),
+    url(r'^team/add/$', backend_views.Add_Team, name='Add_Team'),
+    url(r'^team/delete/$', backend_views.Delete_Team, name='Delete_Team'),
+    url(r'^team/search/$', backend_views.Search_Team, name='Search_Team'),
+    url(r'^team/alter/$', backend_views.Alter_Team, name='Alter_Team'),
 ]

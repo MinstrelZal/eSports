@@ -15,7 +15,7 @@ def init(db, cursor):
     sql = """CREATE TABLE `esport_info` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
                     `name` VARCHAR(20) NOT NULL,
-                    `type` INT(11) DEFAULT NULL,
+                    `type` VARCHAR(20) DEFAULT NULL,
                     PRIMARY KEY (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8"""
     cursor.execute(sql)
@@ -94,7 +94,7 @@ def init(db, cursor):
                     `league_id` INT(11) NOT NULL,
                     `esport_id` INT(11) NOT NULL,
                     `result` VARCHAR(30) NOT NULL,
-                    PRIMARY KEY (`league_id`, `esport_id`)
+                    PRIMARY KEY (`league_id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8"""
     cursor.execute(sql)
 
@@ -292,7 +292,7 @@ def Add_ESport(name, etype):
     except:
         print("Error: Unable to select from esport_info")
         return 1
-    sql = 'INSERT INTO esport_info (name, type) VALUES ("%s", %d);' % (name, etype)
+    sql = 'INSERT INTO esport_info (name, type) VALUES ("%s", "%s");' % (name, etype)
     try:
         cursor.execute(sql)
         db.commit()
@@ -333,8 +333,8 @@ def Search_ESport(name):
     print(esportlist)
     return esportlist
 
-def Alter_Esport(esport_id, name, etype):
-    sql = 'UPDATE esport_info SET name="%s",type=%d WHERE id=%d;' % (name, etype, esport_id)
+def Alter_ESport(esport_id, name, etype):
+    sql = 'UPDATE esport_info SET name="%s",type="%s" WHERE id=%d;' % (name, etype, esport_id)
     try:
         cursor.execute(sql)
         db.commit()
@@ -446,7 +446,7 @@ def League_List():
     return leaguelist
 
 def Add_League_Result(league_id, esport_id, result):
-    sql = 'SELECT result FROM league_result WHERE league_id=%d AND esport_id=%d;' % (league_id, esport_id)
+    sql = 'SELECT result FROM league_result WHERE league_id=%d;' % league_id
     try:
         cursor.execute(sql)
         if(cursor.rowcount == 1):
@@ -466,8 +466,8 @@ def Add_League_Result(league_id, esport_id, result):
         return 1
     return 0
 
-def Delete_League_Result(league_id, esport_id):
-    sql = 'DELETE FROM league_result WHERE league_id=%d AND esport_id=%d;' % (league_id, esport_id)
+def Delete_League_Result(league_id):
+    sql = 'DELETE FROM league_result WHERE league_id=%d;' % league_id
     try:
         cursor.execute(sql)
         db.commit()
@@ -478,18 +478,43 @@ def Delete_League_Result(league_id, esport_id):
         return 1
     return 0
 
-def Search_League_Result(league_id, esport_id):
-    sql = 'SELECT result FROM league_result WHERE league_id=%d AND esport_id=%d;' % (league_id, esport_id)
+def Search_League_Result(league_id):
+    sql = 'SELECT * FROM league_result WHERE league_id=%d;' % league_id
     try:
         cursor.execute(sql)
         result = cursor.fetchone()
     except:
         print('查询联赛记录结果失败')
         return 1
-    return result[0]
+    fields = ('league_id', 'esport_id', 'result')
+    sql = 'SELECT name FROM league_info WHERE id=%d;' % result[0]
+    sql2 = 'SELECT name FROM esport_info WHERE id=%d;' % result[1]
+    result = dict(zip(fields, result))    
+    try:
+        cursor.execute(sql)
+        if(cursor.rowcount < 1):
+            print('该联赛已删除')
+            result['league_name'] = 'UNKNOWN'
+        else:
+            print('查找联赛名称成功')
+            result['league_name'] = cursor.fetchone()[0]
+    except:
+        print('Error: Unable to select from league_info')
+        return 1
+    try:
+        cursor.execute(sql2)
+        if(cursor.rowcount < 1):
+            print('该竞技项目已删除')
+            result['esport_name'] = 'UNKNOWN'
+        else:
+            print('查找竞技项目成功')
+            result['esport_name'] = cursor.fetchone()[0]
+    except:
+        print('Error: Unable to select from esport_info')
+    return result
 
 def Alter_League_Result(league_id, esport_id, result):
-    sql = 'UPDATE league_result SET result="%s" WHERE league_id=%d AND esport_id=%d;' % (result, league_id, esport_id)
+    sql = 'UPDATE league_result SET esport_id=%d,result="%s" WHERE league_id=%d;' % (esport_id, result, league_id)
     try:
         cursor.execute(sql)
         db.commit()
@@ -499,6 +524,46 @@ def Alter_League_Result(league_id, esport_id, result):
         print('Error: Unable to update league_result')
         return 1
     return 0
+
+def League_Result_List():
+    sql = 'SELECT * FROM league_result;'
+    try:
+        cursor.execute(sql)
+        result = cursor.fetchall()
+    except:
+        print('Error: Unable to select from league_info')
+        return 1
+    print('获取联赛记录列表成功')
+    fields = ('league_id', 'esport_id', 'result')
+    leaguelist = []
+    for row in result:
+        sql = 'SELECT name FROM league_info WHERE id=%d;' % row[0]
+        sql2 = 'SELECT name FROM esport_info WHERE id=%d;' % row[1]
+        row = dict(zip(fields, row))
+        try:
+            cursor.execute(sql)
+            if(cursor.rowcount < 1):
+                print('该联赛已删除')
+                row['league_name'] = 'UNKNOWN'
+            else:
+                print('查找联赛名称成功')
+                row['league_name'] = cursor.fetchone()[0]
+        except:
+            print('Error: Unable to select from league_info')
+            return 1
+        try:
+            cursor.execute(sql2)
+            if(cursor.rowcount < 1):
+                print('该竞技项目已删除')
+                row['esport_name'] = 'UNKNOWN'
+            else:
+                print('查找竞技项目成功')
+                row['esport_name'] = cursor.fetchone()[0]
+        except:
+            print('Error: Unable to select from esport_info')
+        leaguelist.append(row)
+    print(leaguelist)
+    return leaguelist
 
 # ---------------------------- game_info ---------------------------------
 # by MinstrelZal
@@ -576,9 +641,22 @@ def Game_List():
         return 1
     print('获取比赛记录列表成功')
     gamelist = []
-    fields = ('id', 'name', 'location', 'league_id', 'result')
+    fields = ('id', 'name', 'time', 'location', 'league_id', 'result')
     for row in result:
+        sql = 'SELECT name FROM league_info WHERE id=%d;' % row[4]
         row = dict(zip(fields, row))
+        try:
+            cursor.execute(sql)
+            if(cursor.rowcount < 1):
+                print('该联赛已被删除')
+                row['league_name'] = 'UNKNOWN'
+            else:
+                print('查找联赛名成功')
+                league_name = cursor.fetchone()[0]
+                row['league_name'] = league_name
+        except:
+            print('Error: Unable to select from league_info')
+            return 1
         gamelist.append(row)
     print(gamelist)
     return gamelist
@@ -599,7 +677,7 @@ def Add_Club(name, sponsor, achievement, setup_time, founder):
     except:
         print('Error: Unable to select from club_info')
         return 1
-    sql = 'INSERT INTO club_info (name, sponsor, achievement, setup_time, founder) VALUES ("%s", "%s", "%s", "s", "%s");' % (name, sponsor, achievement, setup_time, founder)
+    sql = 'INSERT INTO club_info (name, sponsor, achievement, setup_time, founder) VALUES ("%s", "%s", "%s", "%s", "%s");' % (name, sponsor, achievement, setup_time, founder)
     try:
         cursor.execute(sql)
         db.commit()
@@ -662,7 +740,7 @@ def Search_Club(name):
         return 1
     print('查询俱乐部信息成功')
     clublist = []
-    fields = ('id', 'name', 'sponsor', 'achievement', 'setup_time','founder')
+    fields = ('id', 'name', 'sponsor', 'achievement', 'setup_time', 'founder')
     for row in result:
         row = dict(zip(fields, row))
         clublist.append(row)
@@ -762,7 +840,7 @@ def Search_Team(name):
         return 1
     print('查询队伍信息成功')
     teamlist = []
-    fields = ('id', 'name', 'coach', 'achivement', 'club_id','esport_id')
+    fields = ('id', 'name', 'coach', 'achievement', 'club_id','esport_id')
     for row in result:
         row = dict(zip(fields, row))
         teamlist.append(row)
@@ -770,7 +848,7 @@ def Search_Team(name):
     return teamlist
 
 def Alter_Team(team_id, name, coach, achievement, club_id, esport_id):
-    sql = 'UPDATE team_info SET name="%s",coach ="%s",achievement = "%s", club_id = %d, esport = %d WHERE id=%d;' % (name, coach, achievement, club_id, esport_id,team_id)
+    sql = 'UPDATE team_info SET name="%s",coach ="%s",achievement = "%s", club_id = %d, esport_id = %d WHERE id=%d;' % (name, coach, achievement, club_id, esport_id,team_id)
     try:
         cursor.execute(sql)
         db.commit()
@@ -791,7 +869,7 @@ def Team_List():
         return 1
     print('获取队伍信息列表成功')
     teamlist = []
-    fields = ('id', 'name', 'coach', 'achivement', 'club_id','esport_id')
+    fields = ('id', 'name', 'coach', 'achievement', 'club_id','esport_id')
     for row in result:
         row = dict(zip(fields, row))
         teamlist.append(row)
