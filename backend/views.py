@@ -101,7 +101,11 @@ def User_List(request):
     if(request.method == 'POST'):
         data = json.dumps(request.POST)
         data = json.loads(data)
-        result = dbinterface.User_List()
+        username = str(data.get('username'))
+        if(username == ''):
+            result = dbinterface.User_List()
+        else:
+            result = dbinterface.Search_User(username)
         if(type(result) == int):
             return HttpResponse(json.dumps([{'error': 1}], cls=ComplexEncoder))
         return HttpResponse(json.dumps(result, cls=ComplexEncoder))
@@ -168,7 +172,11 @@ def ESport_List(request):
     if(request.method == 'POST'):
         data = json.dumps(request.POST)
         data = json.loads(data)
-        result = dbinterface.ESport_List()
+        name = str(data.get('name'))
+        if(name == ''):
+            result = dbinterface.ESport_List()
+        else:
+            result = dbinterface.Search_ESport(name)
         if(type(result) == int):
             return HttpResponse(json.dumps([{'error': 1}], cls=ComplexEncoder))
         return HttpResponse(json.dumps(result, cls=ComplexEncoder))
@@ -237,7 +245,11 @@ def League_List(request):
     if(request.method == 'POST'):
         data = json.dumps(request.POST)
         data = json.loads(data)
-        result = dbinterface.League_List()
+        name = str(data.get('name'))
+        if(name == ''):
+            result = dbinterface.League_List()
+        else:
+            result = dbinterface.Search_League(name)
         if(type(result) == int):
             return HttpResponse(json.dumps([{'error': 1}], cls=ComplexEncoder))
         return HttpResponse(json.dumps(result, cls=ComplexEncoder))
@@ -282,6 +294,8 @@ def Search_League_Result(request):
             result = dbinterface.Search_League_Result(league_id)
         if(type(result) == int):
             return HttpResponse(json.dumps([{'error': 1}], cls=ComplexEncoder))
+        if(result == {}):
+            return HttpResponse(json.dumps([], cls=ComplexEncoder))
         return HttpResponse(json.dumps([result], cls=ComplexEncoder))
 
 # URL: league/result/alter/
@@ -375,7 +389,10 @@ def Game_List(request):
     if(request.method == 'POST'):
         data = json.dumps(request.POST)
         data = json.loads(data)
-        result = dbinterface.Game_List()
+        if(name == ''):
+            result = dbinterface.Game_List()
+        else:
+            result = dbinterface.Search_Game(name)
         if(type(result) == int):
             return HttpResponse(json.dumps([{'error': 1}], cls=ComplexEncoder))
         return HttpResponse(json.dumps(result, cls=ComplexEncoder))
@@ -447,7 +464,11 @@ def Club_List(request):
     if(request.method == 'POST'):
         data = json.dumps(request.POST)
         data = json.loads(data)
-        result = dbinterface.Club_List()
+        name = str(data.get('name'))
+        if(name == ''):
+            result = dbinterface.Club_List()
+        else:
+            result = dbinterface.Search_Club(name)
         if(type(result) == int):
             return HttpResponse(json.dumps([{'error': 1}], cls=ComplexEncoder))
         return HttpResponse(json.dumps(result, cls=ComplexEncoder))
@@ -519,7 +540,88 @@ def Team_List(request):
     if(request.method == 'POST'):
         data = json.dumps(request.POST)
         data = json.loads(data)
-        result = dbinterface.Team_List()
+        name = str(data.get('name'))
+        if(name == ''):
+            result = dbinterface.Team_List()
+        else:
+            result = dbinterface.Search_Team(name)
         if(type(result) == int):
             return HttpResponse(json.dumps([{'error': 1}], cls=ComplexEncoder))
         return HttpResponse(json.dumps(result, cls=ComplexEncoder))
+
+# ----------------------------------- player_info -------------------------------------------
+# by MinstrelZal
+# 2017-12-24
+
+# URL: player/add/
+@csrf_exempt
+def Add_Player(request):
+    if(request.method == 'POST'):
+        data = json.dumps(request.POST)
+        data = json.loads(data)
+        game_id = str(data.get('game_id'))
+        name = str(data.get('name'))
+        gender = int(data.get('gender'))
+        achievement = str(data.get('achievement'))
+        team_id = int(data.get('team_id'))
+        if(dbinterface.Add_Player(game_id, name, gender, achievement, team_id) == 1):
+            return HttpResponse(json.dumps({'error': 1}, cls=ComplexEncoder))
+        return HttpResponse(json.dumps({'error': 0}, cls=ComplexEncoder))
+
+# URL: player/delete/
+@csrf_exempt
+def Delete_Player(request):
+    if(request.method == 'POST'):
+        data = json.dumps(request.POST)
+        data = json.loads(data)
+        player_id = int(data.get('id'))
+        if(dbinterface.Delete_Player(player_id) == 1):
+            return HttpResponse(json.dumps({'error': 1}, cls=ComplexEncoder))
+        return HttpResponse(json.dumps({'error': 0}, cls=ComplexEncoder))
+
+# URL: player/search/
+@csrf_exempt
+def Search_Player(request):
+    if(request.method == 'POST'):
+        data = json.dumps(request.POST)
+        data = json.loads(data)
+        game_id = str(data.get('game_id'))
+        if(game_id == ''):
+            result = dbinterface.Player_List()
+        else:
+            result = dbinterface.Search_Player(game_id)
+        if(type(result) == int):
+            return HttpResponse(json.dumps([{'error': 1}], cls=ComplexEncoder))
+        return HttpResponse(json.dumps(result, cls=ComplexEncoder))
+
+# URL: player/alter/
+@csrf_exempt
+def Alter_Player(request):
+    if(request.method == 'POST'):
+        data = json.dumps(request.POST)
+        data = json.loads(data)
+        player_id = int(data.get('id'))
+        game_id = str(data.get('game_id'))
+        name = str(data.get('name'))
+        gender = int(data.get('gender'))
+        achievement = str(data.get('achievement'))
+        team_id = int(data.get('team_id'))
+        if(dbinterface.Alter_Player(player_id, game_id, name, gender, achievement, team_id) == 1):
+            return HttpResponse(json.dumps({'error': 1}, cls=ComplexEncoder))
+        return HttpResponse(json.dumps({'error': 0}, cls=ComplexEncoder))
+
+# URL: player/list/
+@csrf_exempt
+def Player_List(request):
+    if(request.method == 'POST'):
+        data = json.dumps(request.POST)
+        data = json.loads(data)
+        game_id = str(data.get('game_id'))
+        if(game_id == ''):
+            result = dbinterface.Player_List()
+        else:
+            result = dbinterface.Search_Player(game_id)
+        if(type(result) == int):
+            return HttpResponse(json.dumps([{'error': 1}], cls=ComplexEncoder))
+        return HttpResponse(json.dumps(result, cls=ComplexEncoder))
+

@@ -11,7 +11,7 @@ db.set_charset('utf8')
 
 def init(db, cursor):
     # create esports_info table
-    cursor.execute("DROP TABLE IF EXISTS esport_info") # type= 0:MOBA 1:FPS
+    cursor.execute("DROP TABLE IF EXISTS esport_info")
     sql = """CREATE TABLE `esport_info` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
                     `name` VARCHAR(20) NOT NULL,
@@ -486,6 +486,8 @@ def Search_League_Result(league_id):
     except:
         print('查询联赛记录结果失败')
         return 1
+    if(result == None):
+        return {}
     fields = ('league_id', 'esport_id', 'result')
     sql = 'SELECT name FROM league_info WHERE id=%d;' % result[0]
     sql2 = 'SELECT name FROM esport_info WHERE id=%d;' % result[1]
@@ -882,7 +884,7 @@ def Team_List():
 # by HUHU
 # 2017-12-23
 def Add_Player(game_id, name, gender, achievement, team_id):
-    sql = 'SELECT id FROM club_info WHERE name="%s";' % name
+    sql = 'SELECT id FROM player_info WHERE name="%s";' % name
     try:
         cursor.execute(sql)
         if(cursor.rowcount == 1):
@@ -891,7 +893,7 @@ def Add_Player(game_id, name, gender, achievement, team_id):
     except:
         print('Error: Unable to select from player_info')
         return 1
-    sql = 'INSERT INTO player_info (game_id, name, gender, achievement, team_id) VALUES (%d, "%s", "%s", "%s",%d);' % (game_id, name, gender, achievement, team_id)
+    sql = 'INSERT INTO player_info (game_id, name, gender, achievement, team_id) VALUES ("%s", "%s", "%s", "%s",%d);' % (game_id, name, gender, achievement, team_id)
     try:
         cursor.execute(sql)
         db.commit()
@@ -903,7 +905,7 @@ def Add_Player(game_id, name, gender, achievement, team_id):
     return 0
 
 def Delete_Player(player_id):
-    sql = 'DELETE FROM plater_info WHERE id=%d;' % player_id
+    sql = 'DELETE FROM player_info WHERE id=%d;' % player_id
     try:
         cursor.execute(sql)
         db.commit()
@@ -914,8 +916,8 @@ def Delete_Player(player_id):
         return 1
     return 0
 
-def Search_Player(name):
-    sql = 'SELECT * FROM player_info WHERE name REGEXP "%s";' % name
+def Search_Player(game_id):
+    sql = 'SELECT * FROM player_info WHERE game_id REGEXP "%s";' % game_id
     try:
         cursor.execute(sql)
         result = cursor.fetchall()
@@ -924,7 +926,7 @@ def Search_Player(name):
         return 1
     print('查询选手信息成功')
     playerlist = []
-    fields = ('id', 'game_id','name', 'gender', 'achivement', 'team_id')
+    fields = ('id', 'game_id','name', 'gender', 'achievement', 'team_id')
     for row in result:
         row = dict(zip(fields, row))
         playerlist.append(row)
@@ -932,7 +934,7 @@ def Search_Player(name):
     return playerlist
 
 def Alter_Player(player_id, game_id, name, gender, achievement, team_id):
-    sql = 'UPDATE player_info SET game_id=%d , name = "%s",gender = "%s" , achievement = "%s" , team_id = %d WHERE id=%d;' % (game_id, name, gender, achievement, team_id, player_id)
+    sql = 'UPDATE player_info SET game_id="%s" , name = "%s",gender = "%s" , achievement = "%s" , team_id = %d WHERE id=%d;' % (game_id, name, gender, achievement, team_id, player_id)
     try:
         cursor.execute(sql)
         db.commit()
@@ -953,7 +955,7 @@ def Player_List():
         return 1
     print('获取选手信息列表成功')
     playerlist = []
-    fields = ('id', 'game_id','name', 'gender', 'achivement', 'team_id')
+    fields = ('id', 'game_id','name', 'gender', 'achievement', 'team_id')
     for row in result:
         row = dict(zip(fields, row))
         playerlist.append(row)

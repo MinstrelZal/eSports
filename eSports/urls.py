@@ -70,4 +70,11 @@ urlpatterns = [
     url(r'^team/delete/$', backend_views.Delete_Team, name='Delete_Team'),
     url(r'^team/search/$', backend_views.Search_Team, name='Search_Team'),
     url(r'^team/alter/$', backend_views.Alter_Team, name='Alter_Team'),
+
+    # player_info
+    url(r'^player/list/$', backend_views.Player_List, name='Player_List'),
+    url(r'^player/add/$', backend_views.Add_Player, name='Add_Player'),
+    url(r'^player/delete/$', backend_views.Delete_Player, name='Delete_Player'),
+    url(r'^player/search/$', backend_views.Search_Player, name='Search_Player'),
+    url(r'^player/alter/$', backend_views.Alter_Player, name='Alter_Player'),
 ]
