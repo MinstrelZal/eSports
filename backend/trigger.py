@@ -52,7 +52,7 @@ def trigger_init(db,cursor) :
            where league_result.league_id = Newleague.id ;\
            delete from game_info \
            where game_info.league_id = Newleague.id; \
-        end; \"        
+        end;"        
 
     cursor.execute(sql1)
 
@@ -65,6 +65,8 @@ def trigger_init(db,cursor) :
         begin \
            delete from player_info \
            where player_info.team_id = Newteam.id \
-        end;\"
+        end;"
 
     cursor.execute(sql1)
+
+trigger_init(db, cursor)
