@@ -389,6 +389,7 @@ def Game_List(request):
     if(request.method == 'POST'):
         data = json.dumps(request.POST)
         data = json.loads(data)
+        name = str(data.get('name'))
         if(name == ''):
             result = dbinterface.Game_List()
         else:
@@ -625,3 +626,139 @@ def Player_List(request):
             return HttpResponse(json.dumps([{'error': 1}], cls=ComplexEncoder))
         return HttpResponse(json.dumps(result, cls=ComplexEncoder))
 
+# ----------------------------------- game_competitor -------------------------------------
+# by MinstrelZal
+# 2017-12-25
+
+# URL: game/competitor/add/
+@csrf_exempt
+def Add_Game_Competitor(request):
+    if(request.method == 'POST'):
+        data = json.dumps(request.POST)
+        data = json.loads(data)
+        game_id = int(data.get('game_id'))
+        team_id = int(data.get('team_id'))
+        player_id = int(data.get('player_id'))
+        self = int(data.get('self'))
+        if(dbinterface.Add_Game_Competitor(game_id, team_id, player_id, self) == 1):
+            return HttpResponse(json.dumps({'error': 1}, cls=ComplexEncoder))
+        return HttpResponse(json.dumps({'error': 0}, cls=ComplexEncoder))
+
+# URL: game/competitor/delete/
+@csrf_exempt
+def Delete_Game_Competitor(request):
+    if(request.method == 'POST'):
+        data = json.dumps(request.POST)
+        data = json.loads(data)
+        game_id = int(data.get('game_id'))
+        team_id = int(data.get('team_id'))
+        player_id = int(data.get('player_id'))
+        if(dbinterface.Delete_Game_Competitor(game_id, team_id, player_id) == 1):
+            return HttpResponse(json.dumps({'error': 1}, cls=ComplexEncoder))
+        return HttpResponse(json.dumps({'error': 0}, cls=ComplexEncoder))
+
+# URL: game/competitor/search/
+@csrf_exempt
+def Search_Game_Competitor(request):
+    if(request.method == 'POST'):
+        data = json.dumps(request.POST)
+        data = json.loads(data)
+        game_id = str(data.get('game_id'))
+        if(game_id == ''):
+            result = dbinterface.Game_Competitor_List()
+        else:
+            game_id = int(game_id)
+            result = dbinterface.Search_Game_Competitor(game_id)
+        if(type(result) == int):
+            return HttpResponse(json.dumps([{'error': 1}], cls=ComplexEncoder))
+        return HttpResponse(json.dumps(result, cls=ComplexEncoder))
+
+# URL: game/competitor/alter/
+@csrf_exempt
+def Alter_Game_Competitor(request):
+    if(request.method == 'POST'):
+        data = json.dumps(request.POST)
+        data = json.loads(data)
+        game_id = int(data.get('game_id'))
+        team_id = int(data.get('team_id'))
+        player_id = int(data.get('player_id'))
+        self = int(data.get('self'))
+        if(dbinterface.Alter_Game_Competitor(game_id, team_id, player_id, self) == 1):
+            return HttpResponse(json.dumps({'error': 1}, cls=ComplexEncoder))
+        return HttpResponse(json.dumps({'error': 0}, cls=ComplexEncoder))
+
+# URL: game/competitor/list/
+@csrf_exempt
+def Game_Competitor_List(request):
+    if(request.method == 'POST'):
+        data = json.dumps(request.POST)
+        data = json.loads(data)
+        game_id = str(data.get('game_id'))
+        if(game_id == ''):
+            result = dbinterface.Game_Competitor_List()
+        else:
+            game_id = int(game_id)
+            result = dbinterface.Search_Game_Competitor(game_id)
+        if(type(result) == int):
+            return HttpResponse(json.dumps([{'error': 1}], cls=ComplexEncoder))
+        return HttpResponse(json.dumps(result, cls=ComplexEncoder))
+
+# -------------------------------- club_esport ------------------------------------
+# by MinstrelZal
+# 2017-12-25
+
+# URL: club/esport/add/
+@csrf_exempt
+def Add_Club_ESport(request):
+    if(request.method == 'POST'):
+        data = json.dumps(request.POST)
+        data = json.loads(data)
+        club_id = int(data.get('club_id'))
+        esport_id = int(data.get('esport_id'))
+        if(dbinterface.Add_Club_ESport(club_id, esport_id) == 1):
+            return HttpResponse(json.dumps({'error': 1}, cls=ComplexEncoder))
+        return HttpResponse(json.dumps({'error': 0}, cls=ComplexEncoder))
+
+# URL: club/esport/delete/
+@csrf_exempt
+def Delete_Club_ESport(request):
+    if(request.method == 'POST'):
+        data = json.dumps(request.POST)
+        data = json.loads(data)
+        club_id = int(data.get('club_id'))
+        esport_id = int(data.get('esport_id'))
+        if(dbinterface.Delete_Club_ESport(club_id, esport_id) == 1):
+            return HttpResponse(json.dumps({'error': 1}, cls=ComplexEncoder))
+        return HttpResponse(json.dumps({'error': 0}, cls=ComplexEncoder))
+
+# URL: club/esport/search/
+@csrf_exempt
+def Search_Club_ESport(request):
+    if(request.method == 'POST'):
+        data = json.dumps(request.POST)
+        data = json.loads(data)
+        club_id = str(data.get('club_id'))
+        if(club_id == ''):
+            result = dbinterface.Club_ESport_List()
+        else:
+            club_id = int(club_id)
+            result = dbinterface.Search_Club_ESport(club_id)
+        if(type(result) == int):
+            return HttpResponse(json.dumps([{'error': 1}], cls=ComplexEncoder))
+        return HttpResponse(json.dumps(result, cls=ComplexEncoder))
+
+# URL: club/esport/list/
+@csrf_exempt
+def Club_ESport_List(request):
+    if(request.method == 'POST'):
+        data = json.dumps(request.POST)
+        data = json.loads(data)
+        club_id = str(data.get('club_id'))
+        if(club_id == ''):
+            result = dbinterface.Club_ESport_List()
+        else:
+            club_id = int(club_id)
+            result = dbinterface.Search_Club_ESport(club_id)
+        if(type(result) == int):
+            return HttpResponse(json.dumps([{'error': 1}], cls=ComplexEncoder))
+        return HttpResponse(json.dumps(result, cls=ComplexEncoder))

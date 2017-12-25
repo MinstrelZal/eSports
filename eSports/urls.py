@@ -38,12 +38,14 @@ urlpatterns = [
     url(r'^esport/search/$', backend_views.Search_ESport, name='Search_ESport'),
     url(r'^esport/alter/$', backend_views.Alter_ESport, name='Alter_ESport'),
 
-    # league_info & league_result
+    # league_info
     url(r'^league/list/$', backend_views.League_List, name='League_List'),
     url(r'^league/add/$', backend_views.Add_League, name='Add_League'),
     url(r'^league/delete/$', backend_views.Delete_League, name='Delete_League'),
     url(r'^league/search/$', backend_views.Search_League, name='Search_League'),
     url(r'^league/alter/$', backend_views.Alter_League, name='Alter_League'),
+
+    # league_result
     url(r'^league/result/list/$', backend_views.League_Result_List, name='League_Result_List'),
     url(r'^league/result/add/$', backend_views.Add_League_Result, name='Add_League_Result'),
     url(r'^league/result/delete/$', backend_views.Delete_League_Result, name='Delete_League_Result'),
@@ -77,4 +79,17 @@ urlpatterns = [
     url(r'^player/delete/$', backend_views.Delete_Player, name='Delete_Player'),
     url(r'^player/search/$', backend_views.Search_Player, name='Search_Player'),
     url(r'^player/alter/$', backend_views.Alter_Player, name='Alter_Player'),
+
+    # game_competitor
+    url(r'^game/competitor/list/$', backend_views.Game_Competitor_List, name='Game_Competitor_List'),
+    url(r'^game/competitor/add/$', backend_views.Add_Game_Competitor, name='Add_Game_Competitor'),
+    url(r'^game/competitor/delete/$', backend_views.Delete_Game_Competitor, name='Delete_Game_Competitor'),
+    url(r'^game/competitor/search/$', backend_views.Search_Game_Competitor, name='Search_Game_Competitor'),
+    url(r'game/competitor/alter/$', backend_views.Alter_Game_Competitor, name='Alter_Game_Competitor'),
+
+    # club_esport
+    url(r'club/esport/list/$', backend_views.Club_ESport_List, name='Club_ESport_List'),
+    url(r'club/esport/add/$', backend_views.Add_Club_ESport, name='Add_Club_ESport'),
+    url(r'club/esport/delete/$', backend_views.Delete_Club_ESport, name='Delete_Club_ESport'),
+    url(r'club/esport/search/$', backend_views.Search_Club_ESport, name='Search_Club_ESport'),
 ]
