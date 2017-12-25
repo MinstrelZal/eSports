@@ -223,7 +223,7 @@ def Delete_User(user_id):
     return 0
 
 def Search_User(username):
-    sql = 'SELECT id,username,is_staff FROM user_info WHERE username REGEXP "%s";' % username
+    sql = 'SELECT id,username,is_staff,is_loggedin FROM user_info WHERE username REGEXP "%s";' % username
     try:
         cursor.execute(sql)
         if(cursor.rowcount == 0):
@@ -234,7 +234,7 @@ def Search_User(username):
         print("Error: Unable to select from user_info")
         return 1
     print("查询成功")
-    fields = ('id', 'username', 'is_staff')
+    fields = ('id', 'username', 'is_staff', 'is_loggedin')
     userlist = []
     for row in result:
         row = dict(zip(fields, row))
@@ -261,7 +261,7 @@ def Alter_User(user_id, username, password, is_staff=0):
     return 0
 
 def User_List():
-    sql = "SELECT id,username,is_staff FROM user_info;"
+    sql = "SELECT id,username,is_staff,is_loggedin FROM user_info;"
     try:
         cursor.execute(sql)
         result = cursor.fetchall()
@@ -270,7 +270,7 @@ def User_List():
         print("Error: Unable to select from user_info")
         return 1
     print("获取用户列表成功")
-    fields = ('id', 'username', 'is_staff')
+    fields = ('id', 'username', 'is_staff', 'is_loggedin')
     userlist = []
     for row in result:
         row = dict(zip(fields, row))
