@@ -127,6 +127,7 @@ def Register_Login(username, password, is_loggedin=1, is_staff=1):
     if(len(password) < 8 or len(password) > 30):
         print("密码长度需在8-30位之间")
         return 1
+    '''
     sql = 'SELECT password FROM user_info WHERE username="%s";' % username
     try:
         cursor.execute(sql)
@@ -159,6 +160,20 @@ def Register_Login(username, password, is_loggedin=1, is_staff=1):
     except:
         db.rollback()
         print("Error: Unable to insert into user_info")
+        return 1
+    return 0
+    '''
+    sql = 'call register_login("%s", "%s", %d, %d);' % (username, password, is_loggedin, is_staff)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print('密码错误')
+            return 1
+        print("(注册)登录成功")
+    except:
+        db.rollback()
+        print("Error: Unable to Register or Login")
         return 1
     return 0
 
@@ -554,6 +569,7 @@ def League_List():
     return leaguelist
 
 def Add_League_Result(league_id, esport_id, result):
+    '''
     sql = 'SELECT name FROM league_info WHERE id=%d;' % league_id
     try:
         cursor.execute(sql)
@@ -589,6 +605,20 @@ def Add_League_Result(league_id, esport_id, result):
     except:
         db.rollback()
         print('Error: Unable to insert into league_result')
+        return 1
+    return 0
+    '''
+    sql = 'call add_league_result(%d, %d, "%s");' % (league_id, esport_id, result)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print("该联赛信息已删除 or 该竞技项目已删除 or 该联赛结果已登记")
+            return 1
+        print('联赛结果记录添加成功')
+    except:
+        db.rollback()
+        print('Error: Unable to Add League Result')
         return 1
     return 0
 
@@ -642,6 +672,7 @@ def Search_League_Result(league_id):
     return result
 
 def Alter_League_Result(league_id, esport_id, result):
+    '''
     sql = 'UPDATE league_result SET esport_id=%d,result="%s" WHERE league_id=%d;' % (esport_id, result, league_id)
     try:
         cursor.execute(sql)
@@ -650,6 +681,20 @@ def Alter_League_Result(league_id, esport_id, result):
     except:
         db.rollback()
         print('Error: Unable to update league_result')
+        return 1
+    return 0
+    '''
+    sql = 'call alter_league_result(%d, %d, "%s");' % (league_id, esport_id, result)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print('该联赛结果不存在')
+            return 1
+        print('联赛结果记录修改成功')
+    except:
+        db.rollback()
+        print('Error: Unable to Alter League Result')
         return 1
     return 0
 
@@ -698,6 +743,7 @@ def League_Result_List():
 # 2017-12-22
 
 def Add_Game(name, time, location, league_id, result):
+    '''
     sql = 'SELECT name FROM league_info WHERE id=%d;' % league_id
     try:
         cursor.execute(sql)
@@ -724,6 +770,20 @@ def Add_Game(name, time, location, league_id, result):
     except:
         db.rollback()
         print('Error: Unable to insert into game_info')
+        return 1
+    return 0
+    '''
+    sql = 'call add_game("%s", "%s", "%s", %d, "%s");' % (name, time, location, league_id, result)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print('该联赛信息已删除 or 该比赛记录已登记')
+            return 1
+        print("添加比赛记录成功")
+    except:
+        db.rollback()
+        print('Error: Unable to Add Game')
         return 1
     return 0
 
@@ -757,6 +817,7 @@ def Search_Game(name):
     return gamelist
 
 def Alter_Game(game_id, name, time, location, league_id, result):
+    '''
     sql = 'SELECT name FROM league_info WHERE id=%d;' % league_id
     try:
         cursor.execute(sql)
@@ -774,6 +835,20 @@ def Alter_Game(game_id, name, time, location, league_id, result):
     except:
         db.rollback()
         print('Error: Unable to update game_info')
+        return 1
+    return 0
+    '''
+    sql = 'call alter_game(%d, "%s", "%s", "%s", %d, "%s");' % (game_id, name, time, location, league_id, result)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1): 
+            print('该联赛信息已删除 or 比赛记录不存在')
+            return 1
+        print('编辑比赛记录成功')
+    except:
+        db.rollback()
+        print('Error: Unable to Alter Game')
         return 1
     return 0
 
@@ -814,6 +889,7 @@ def Game_List():
 # by HUHU
 # 2017-12-23
 def Add_Club(name, sponsor, achievement, setup_time, founder):
+    '''
     sql = 'SELECT id FROM club_info WHERE name="%s";' % name
     try:
         cursor.execute(sql)
@@ -833,8 +909,23 @@ def Add_Club(name, sponsor, achievement, setup_time, founder):
         print('Error: Unable to insert into club_info')
         return 1
     return 0
+    '''
+    sql = 'call add_club("%s", "%s", "%s", "%s", "%s");' % (name, sponsor, achievement, setup_time, founder)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print("该俱乐部信息已存在")
+            return 1
+        print("添加俱乐部信息成功")
+    except:
+        db.rollback()
+        print('Error: Unable to Add Club')
+        return 1
+    return 0
 
 def Add_Club_ESport(club_id,esport_id):
+    '''
     sql = 'SELECT name FROM club_info WHERE id=%d;' % club_id
     try:
         cursor.execute(sql)
@@ -866,6 +957,20 @@ def Add_Club_ESport(club_id,esport_id):
     try:
         cursor.execute(sql)
         db.commit()
+        print("添加俱乐部涉及项目记录成功")
+    except:
+        db.rollback()
+        print('Error: Unable to insert into club_esport')
+        return 1
+    return 0
+    '''
+    sql = 'call add_club_esport(%d, %d);' % (club_id, esport_id)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print('该俱乐部信息已删除 or 该竞技项目已删除')
+            return 1
         print("添加俱乐部涉及项目记录成功")
     except:
         db.rollback()
@@ -958,6 +1063,7 @@ def Search_Club_ESport(club_id):
     return club_esportlist
 
 def Alter_Club(club_id, name, sponsor, achievement, setup_time, founder):
+    '''
     sql = 'UPDATE club_info SET name="%s",sponsor="%s",achievement="%s",setup_time="%s",founder = "%s" WHERE id=%d;' % (name, sponsor, achievement, setup_time, founder,club_id)
     try:
         cursor.execute(sql)
@@ -966,6 +1072,20 @@ def Alter_Club(club_id, name, sponsor, achievement, setup_time, founder):
     except:
         db.rollback()
         print('Error: Unable to update club_info')
+        return 1
+    return 0
+    '''
+    sql = 'call alter_club(%d, "%s", "%s", "%s", "%s", "%s");' % (club_id, name, sponsor, achievement, setup_time, founder)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print("该俱乐部不存在")
+            return 1
+        print('编辑俱乐部信息成功')
+    except:
+        db.rollback()
+        print('Error: Unable to Alter Club')
         return 1
     return 0
 
@@ -1033,6 +1153,7 @@ def Club_ESport_List():
 # by HUHU
 # 2017-12-23
 def Add_Team(name, coach, achievement, club_id, esport_id):
+    '''
     sql = 'SELECT name FROM club_info WHERE id=%d;' % club_id
     try:
         cursor.execute(sql)
@@ -1070,6 +1191,20 @@ def Add_Team(name, coach, achievement, club_id, esport_id):
         print('Error: Unable to insert into team_info')
         return 1
     return 0
+    '''
+    sql = 'call add_team("%s", "%s", "%s", %d, %d);' % (name, coach, achievement, club_id, esport_id)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print('该俱乐部信息已删除 or 该竞技项目信息已删除 or 该队伍信息已登记')
+            return 1
+        print("添加队伍信息成功")
+    except:
+        db.rollback()
+        print('Error: Unable to Add Team')
+        return 1
+    return 0
 
 def Delete_Team(team_id):
     sql = 'DELETE FROM team_info WHERE id=%d;' % team_id
@@ -1101,6 +1236,7 @@ def Search_Team(name):
     return teamlist
 
 def Alter_Team(team_id, name, coach, achievement, club_id, esport_id):
+    '''
     sql = 'SELECT name FROM club_info WHERE id=%d;' % club_id
     try:
         cursor.execute(sql)
@@ -1129,6 +1265,20 @@ def Alter_Team(team_id, name, coach, achievement, club_id, esport_id):
         print('Error: Unable to update team_info')
         return 1
     return 0
+    '''
+    sql = 'call alter_team(%d, "%s", "%s", "%s", %d, %d)' % (team_id, name, coach, achievement, club_id, esport_id)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print('该俱乐部信息已删除 or 该竞技项目已删除 or 该队伍不存在')
+            return 1
+        print('编辑队伍信息成功')
+    except:
+        db.rollback()
+        print('Error: Unable to Alter Team')
+        return 1
+    return 0
 
 def Team_List():
     sql = 'SELECT * FROM team_info;'
@@ -1153,6 +1303,7 @@ def Team_List():
 # by HUHU
 # 2017-12-23
 def Add_Player(game_id, name, gender, achievement, team_id):
+    '''
     sql = 'SELECT name FROM team_info WHERE id=%d;' % team_id
     try:
         cursor.execute(sql)
@@ -1179,6 +1330,20 @@ def Add_Player(game_id, name, gender, achievement, team_id):
     except:
         db.rollback()
         print('Error: Unable to insert into player_info')
+        return 1
+    return 0
+    '''
+    sql = 'call add_player("%s", "%s", %d, "%s", %d);' % (game_id, name, gender, achievement, team_id)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print('该战队信息已删除 or 该选手信息已登记')
+            return 1
+        print("添加选手信息成功")
+    except:
+        db.rollback()
+        print('Error: Unable to Add Player')
         return 1
     return 0
 
@@ -1212,6 +1377,7 @@ def Search_Player(game_id):
     return playerlist
 
 def Alter_Player(player_id, game_id, name, gender, achievement, team_id):
+    '''
     sql = 'SELECT name FROM team_info WHERE id=%d;' % team_id
     try:
         cursor.execute(sql)
@@ -1229,6 +1395,20 @@ def Alter_Player(player_id, game_id, name, gender, achievement, team_id):
     except:
         db.rollback()
         print('Error: Unable to update player_info')
+        return 1
+    return 0
+    '''
+    sql = 'call alter_player(%d, "%s", "%s", %d, "%s", %d);' % (player_id, game_id, name, gender, achievement, team_id)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print("该战队信息已删除 or 该选手不存在")
+            return 1
+        print('编辑选手信息成功')
+    except:
+        db.rollback()
+        print('Error: Unable to Alter Player')
         return 1
     return 0
 
@@ -1255,6 +1435,7 @@ def Player_List():
 # by HUHU
 # 2017-12-23
 def Add_Game_Competitor(game_id, team_id, player_id, self):
+    '''
     sql = 'SELECT name FROM game_info where id=%d;' % game_id
     try:
         cursor.execute(sql)
@@ -1301,6 +1482,20 @@ def Add_Game_Competitor(game_id, team_id, player_id, self):
         print('Error: Unable to insert into game_competitor')
         return 1
     return 0
+    '''
+    sql = 'call add_game_competitor(%d, %d, %d, %d);' % (game_id, team_id, player_id, self)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print('该比赛信息已删除 or 该战队信息已删除 or 该选手信息已删除 or 该比赛参赛信息已登记')
+            return 1
+        print("添加比赛参赛信息记录成功")
+    except:
+        db.rollback()
+        print('Error: Unable to Add Game Competitor')
+        return 1
+    return 0
 
 def Delete_Game_Competitor(game_id, team_id, player_id):
     sql = 'DELETE FROM game_competitor WHERE game_id=%d AND team_id=%d AND player_id=%d;' % (game_id, team_id, player_id)
@@ -1332,6 +1527,7 @@ def Search_Game_Competitor(game_id):
     return game_competitorlist
 
 def Alter_Game_Competitor(game_id, team_id, player_id, self):
+    '''
     sql = 'SELECT name FROM game_info where id=%d;' % game_id
     try:
         cursor.execute(sql)
@@ -1367,6 +1563,20 @@ def Alter_Game_Competitor(game_id, team_id, player_id, self):
     except:
         db.rollback()
         print('Error: Unable to update game_competitor')
+        return 1
+    return 0
+    '''
+    sql = 'call alter_game_competitor(%d, %d, %d, %d);' % (game_id, team_id, player_id, self)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print('该比赛信息已删除 or 该战队信息已删除 or 该选手信息已删除 or 该比赛参赛信息不存在')
+            return 1
+        print('编辑比赛参赛信息成功')
+    except:
+        db.rollback()
+        print('Error: Unable to Alter Game Competitor')
         return 1
     return 0
 
