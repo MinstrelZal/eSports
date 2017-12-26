@@ -163,6 +163,7 @@ def Register_Login(username, password, is_loggedin=1, is_staff=1):
     return 0
 
 def Logout(username):
+    '''
     sql = 'SELECT id FROM user_info WHERE username="%s";' % username
     try:
         cursor.execute(sql)
@@ -182,6 +183,20 @@ def Logout(username):
         return 1
     print("登出成功")
     return 0
+    '''
+    sql = 'call logout("%s");' % username
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount != 1):
+            print('用户名错误')
+            return 1
+    except:
+        db.rollback()
+        print("Error: Unable to update user_info")
+        return 1
+    print("登出成功")
+    return 0
         
 def Add_User(username, password, is_loggedin=0, is_staff=0):
     if(len(username) < 1 or len(username) > 30):
@@ -190,6 +205,7 @@ def Add_User(username, password, is_loggedin=0, is_staff=0):
     if(len(password) < 8 or len(password) > 30):
         print("密码长度需在8-30位之间")
         return 1
+    '''
     sql = 'SELECT password FROM user_info WHERE username="%s";' % username
     try:
         cursor.execute(sql)
@@ -209,6 +225,22 @@ def Add_User(username, password, is_loggedin=0, is_staff=0):
         print("Error: Unable to insert into user_info")
         return 1
     return 0
+    '''
+    sql = 'call add_user("%s", "%s", %d, %d);' % (username, password, is_loggedin, is_staff)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount > 0):
+            print("用户添加成功")
+        else:
+            print("用户已存在")
+            return 1
+    except:
+        db.rollback()
+        print("Error: Unable to Add User")
+        return 1
+    return 0
+
 
 def Delete_User(user_id):
     sql = 'DELETE FROM user_info WHERE id="%d";' % user_id
@@ -249,6 +281,7 @@ def Alter_User(user_id, username, password, is_staff=0):
     if(len(password) < 8 or len(password) > 30):
         print("密码长度需在8-30位之间")
         return 1
+    '''
     sql = 'UPDATE user_info SET username="%s",password="%s",is_staff=%d WHERE id=%d;' % (username, password, is_staff, user_id)
     try:
         cursor.execute(sql)
@@ -257,6 +290,20 @@ def Alter_User(user_id, username, password, is_staff=0):
     except:
         db.rollback()
         print("Error: Unable to update user_info")
+        return 1
+    return 0
+    '''
+    sql = 'call alter_user(%d, "%s", "%s", %d);' % (user_id, username, password, is_staff)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print('该用户不存在')
+            return 1
+        print("编辑用户信息成功")
+    except:
+        db.rollback()
+        print("Error: Unable to Alter User")
         return 1
     return 0
 
@@ -283,6 +330,7 @@ def User_List():
 # 2017-12-22
 
 def Add_ESport(name, etype):
+    '''
     sql = 'SELECT id FROM esport_info WHERE name="%s";' % name
     try:
         cursor.execute(sql)
@@ -300,6 +348,20 @@ def Add_ESport(name, etype):
     except:
         db.rollback()
         print("Error: Unable to insert into esport_info")
+        return 1
+    return 0
+    '''
+    sql = 'call add_esport("%s", "%s");' % (name, etype)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print('该项目已存在')
+            return 1
+        print("项目添加成功")
+    except:
+        db.rollback()
+        print("Error: Unable to insert Add ESport")
         return 1
     return 0
 
@@ -334,6 +396,7 @@ def Search_ESport(name):
     return esportlist
 
 def Alter_ESport(esport_id, name, etype):
+    '''
     sql = 'UPDATE esport_info SET name="%s",type="%s" WHERE id=%d;' % (name, etype, esport_id)
     try:
         cursor.execute(sql)
@@ -342,6 +405,20 @@ def Alter_ESport(esport_id, name, etype):
     except:
         db.rollback()
         print('Error: Unable to update esport_info')
+        return 1
+    return 0
+    '''
+    sql = 'call alter_esport(%d, "%s", "%s");' % (esport_id, name, etype)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1): 
+            print("该竞技项目不存在")
+            return 1
+        print("编辑竞技项目信息成功")
+    except:
+        db.rollback()
+        print('Error: Unable to Alter ESport')
         return 1
     return 0
 
@@ -368,6 +445,7 @@ def ESport_List():
 # 2017-12-22
 
 def Add_League(name, begin_time, end_time):
+    '''
     sql = 'SELECT id FROM league_info WHERE name="%s";' % name
     try:
         cursor.execute(sql)
@@ -385,6 +463,20 @@ def Add_League(name, begin_time, end_time):
     except:
         db.rollback()
         print('Error: Unable to insert into league_info')
+        return 1
+    return 0
+    '''
+    sql = 'call add_league("%s", "%s", "%s");' % (name, begin_time, end_time)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print("该联赛记录已存在")
+            return 1
+        print('联赛记录添加成功')
+    except:
+        db.rollback()
+        print('Error: Unable to Add League')
         return 1
     return 0
 
@@ -417,6 +509,7 @@ def Search_League(name):
     return leaguelist
 
 def Alter_League(league_id, name, begin_time, end_time):
+    '''
     sql = 'UPDATE league_info SET name="%s",begin_time="%s",end_time="%s" WHERE id=%d;' % (name, begin_time, end_time, league_id)
     try:
         cursor.execute(sql)
@@ -427,6 +520,21 @@ def Alter_League(league_id, name, begin_time, end_time):
         print('Error: Unable to update league_info')
         return 1
     return 0
+    '''
+    sql = 'call alter_league(%d, "%s", "%s", "%s");' % (league_id, name, begin_time, end_time)
+    try:
+        cursor.execute(sql)
+        db.commit()
+        if(cursor.rowcount < 1):
+            print("该联赛记录不存在")
+            return 1
+        print('编辑联赛记录信息成功')
+    except:
+        db.rollback()
+        print('Error: Unable to update league_info')
+        return 1
+    return 0
+
 
 def League_List():
     sql = 'SELECT * FROM league_info;'
