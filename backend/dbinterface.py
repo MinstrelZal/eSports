@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pymysql
 
-db = pymysql.connect('localhost', 'root', '20121513zal', 'esports')
+db = pymysql.connect('localhost', 'root', '20121513zal', 'blog')
 cursor = db.cursor()
 db.set_charset('utf8')
 
@@ -14,7 +14,7 @@ def init(db, cursor):
     cursor.execute("DROP TABLE IF EXISTS esport_info")
     sql = """CREATE TABLE `esport_info` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
-                    `name` VARCHAR(20) NOT NULL,
+                    `name` VARCHAR(20) NOT NULL UNIQUE,
                     `type` VARCHAR(20) DEFAULT NULL,
                     PRIMARY KEY (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8"""
@@ -23,7 +23,7 @@ def init(db, cursor):
     cursor.execute("DROP TABLE IF EXISTS league_info")
     sql = """CREATE TABLE `league_info` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
-                    `name` VARCHAR(30) NOT NULL,
+                    `name` VARCHAR(30) NOT NULL UNIQUE,
                     `begin_time` DATE DEFAULT NULL,
                     `end_time` DATE DEFAULT NULL,
                     PRIMARY KEY (`id`)
@@ -33,7 +33,7 @@ def init(db, cursor):
     cursor.execute("DROP TABLE IF EXISTS game_info")
     sql = """CREATE TABLE `game_info` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
-                    `name` VARCHAR(30) NOT NULL,
+                    `name` VARCHAR(30) NOT NULL UNIQUE,
                     `time` DATE DEFAULT NULL,
                     `location` VARCHAR(20) DEFAULT NULL,
                     `league_id` INT(11) NOT NULL,
@@ -45,7 +45,7 @@ def init(db, cursor):
     cursor.execute("DROP TABLE IF EXISTS club_info")
     sql = """CREATE TABLE `club_info` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
-                    `name` VARCHAR(30) NOT NULL,
+                    `name` VARCHAR(30) NOT NULL UNIQUE,
                     `sponsor` VARCHAR(30) DEFAULT NULL,
                     `achievement` VARCHAR(255) DEFAULT NULL,
                     `setup_time` DATE DEFAULT NULL,
@@ -57,7 +57,7 @@ def init(db, cursor):
     cursor.execute("DROP TABLE IF EXISTS team_info")
     sql = """CREATE TABLE `team_info` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
-                    `name` VARCHAR(30) NOT NULL,
+                    `name` VARCHAR(30) NOT NULL UNIQUE,
                     `coach` VARCHAR(30) DEFAULT NULL,
                     `achievement` VARCHAR(255) DEFAULT NULL,
                     `club_id` INT(11) NOT NULL,
@@ -74,14 +74,15 @@ def init(db, cursor):
                     `gender` TINYINT NOT NULL,
                     `achievement` VARCHAR(255) DEFAULT NULL,
                     `team_id` INT(11) NOT NULL,
-                    PRIMARY KEY (`id`)
+                    PRIMARY KEY (`id`),
+                    UNIQUE KEY (`game_id`, `name`, `gender`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8"""
     cursor.execute(sql)
    
     cursor.execute("DROP TABLE IF EXISTS user_info")
     sql = """CREATE TABLE `user_info` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
-                    `username` VARCHAR(30) NOT NULL,
+                    `username` VARCHAR(30) NOT NULL UNIQUE,
                     `password` VARCHAR(30) NOT NULL,
                     `is_loggedin` TINYINT DEFAULT 0,
                     `is_staff` TINYINT DEFAULT 0,
