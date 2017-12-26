@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pymysql
 
-db = pymysql.connect('localhost', 'root', '20121513zal', 'blog')
+db = pymysql.connect('localhost', 'root', '20121513zal', 'esports')
 cursor = db.cursor()
 db.set_charset('utf8')
 
