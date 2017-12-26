@@ -34,12 +34,12 @@ sql = """
                   where league_result.esport_id = old.id 
             ); 
            delete from league_result 
-           where league_result.esport_id = old.id ;
+           where league_result.esport_id = old.id;
            end"""
 
 cur.execute(sql)
 
-    #cursor.execute("drop trigger delete_all_game on league_info if exists delete_all_game")
+    #cursor.execute("drop trigger delete_all_game on league_info if exists delete_all_game
 cur.execute("drop trigger if exists delete_all_game")
 sql = "    create trigger delete_all_game\
            before delete on league_info \
