@@ -246,11 +246,10 @@ def Add_User(username, password, is_loggedin=0, is_staff=0):
     try:
         cursor.execute(sql)
         db.commit()
-        if(cursor.rowcount > 0):
-            print("用户添加成功")
-        else:
-            print("用户已存在")
+        if(cursor.rowcount < 1):
+            print('用户已存在')
             return 1
+        print("用户添加成功")
     except:
         db.rollback()
         print("Error: Unable to Add User")
