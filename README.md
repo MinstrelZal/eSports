@@ -1,2 +1,2 @@
 # eSports
-# BUAA database course design
+### BUAA database course design
