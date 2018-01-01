@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pymysql
 
-db = pymysql.connect('localhost', 'root', '20121513zal', 'esports')
+db = pymysql.connect('localhost', 'root', 'huhuhu917531', 'esport')
 cursor = db.cursor()
 db.set_charset('utf8')
 
@@ -37,7 +37,7 @@ def init(db, cursor):
                     `time` DATE DEFAULT NULL,
                     `location` VARCHAR(20) DEFAULT NULL,
                     `league_id` INT(11) NOT NULL,
-                    `result` VARCHAR(20) NOT NULL,
+                    `result` VARCHAR(40) NOT NULL,
                     PRIMARY KEY (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8"""
     cursor.execute(sql)
@@ -117,6 +117,8 @@ def init(db, cursor):
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8"""
     cursor.execute(sql)
 
+
+init(db,cursor)
 # --------------------------------------- user_info ------------------------------------------
 # by MinstrelZal
 # 2017-12-22
@@ -345,28 +347,8 @@ def User_List():
 # 2017-12-22
 
 def Add_ESport(name, etype):
-    '''
-    sql = 'SELECT id FROM esport_info WHERE name="%s";' % name
-    try:
-        cursor.execute(sql)
-        if(cursor.rowcount == 1):
-            print("该项目已存在")
-            return 1
-    except:
-        print("Error: Unable to select from esport_info")
-        return 1
-    sql = 'INSERT INTO esport_info (name, type) VALUES ("%s", "%s");' % (name, etype)
-    try:
-        cursor.execute(sql)
-        db.commit()
-        print("项目添加成功")
-    except:
-        db.rollback()
-        print("Error: Unable to insert into esport_info")
-        return 1
-    return 0
-    '''
-    sql = 'call add_esport("%s", "%s");' % (name, etype)
+
+    sql = 'call add_esport("%s","%s")' % (name, etype)
     try:
         cursor.execute(sql)
         db.commit()
@@ -379,6 +361,8 @@ def Add_ESport(name, etype):
         print("Error: Unable to insert Add ESport")
         return 1
     return 0
+
+
 
 def Delete_ESport(esport_id):
     sql = 'DELETE FROM esport_info WHERE id=%d;' % esport_id
@@ -1596,3 +1580,7 @@ def Game_Competitor_List():
         game_competitorlist.append(row)
     print(game_competitorlist)
     return game_competitorlist
+
+
+
+Add_ESport("英雄联盟","MOBA")
