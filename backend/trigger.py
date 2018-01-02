@@ -1,7 +1,8 @@
 import pymysql
+from backend import dbinterface
 
-db = pymysql.connect('localhost', 'root', 'huhuhu917531', 'test_db')
-cur = db.cursor()
+#db = pymysql.connect('localhost', 'root', 'huhuhu917531', 'test_db')
+cur = dbinterface.cursor
 #db.set_charset('utf8')
 
 #创建trigger
@@ -10,14 +11,13 @@ cur = db.cursor()
 #  3.删除team_info 条目后， 删除player_info属于team_info的选手信息
 #  4.删除club_info 条目后， 删除team_info 属于club_info的信息
 
-cur.execute("drop trigger if esport_delete_trigger")
-sql = """
-           create trigger esport_delete_trigger
+cur.execute("drop trigger if exists esport_delete_trigger")
+sql = """create trigger esport_delete_trigger
            before delete on esport_info 
            for each row 
            begin 
            delete from league_info 
-              where league_info.id = ALL 
+              where league_info.id = ALL
               (
                   select league_id 
                   from league_result 
@@ -60,7 +60,7 @@ sql = """
          delete from team_info
          where team_info.club_id = old.id
 """
-
+cur.execute(sql)
 
 
 

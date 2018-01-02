@@ -1,9 +1,9 @@
 import pymysql
 import random
-import dbinterface
+from backend import dbinterface
 
-db = pymysql.connect('localhost', 'root', 'huhuhu917531', 'esport')
-cursor = db.cursor()
+#db = pymysql.connect('localhost', 'root', 'huhuhu917531', 'esport')
+#cursor = db.cursor()
     
 #esport_info  data
 def ADD_ESPORT():
@@ -317,10 +317,11 @@ def ADD_GAME_COM():
     for i in range(21,200):
         dbinterface.Add_Game_Competitor(i,random.randint(1,100),random.randint(1,100),random.randint(0,1))
     
-    
+def ADD_CLUB_ESPORT():
+    for i in range(0,200):
+        dbinterface.Add_Club_ESport(random.randint(1,200),random.randint(1,200))    
 
 def add_all_data() :
-    dbinterface.init(db,cursor)
     ADD_ESPORT()
     ADD_LEAGUE()
     ADD_GAME()
@@ -329,3 +330,4 @@ def add_all_data() :
     ADD_PLAYER()
     ADD_LEAGUE_RESULT()
     ADD_GAME_COM()
+    ADD_CLUB_ESPORT()

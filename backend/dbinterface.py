@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pymysql
 
-db = pymysql.connect('localhost', 'root', 'huhuhu917531', 'esport')
+db = pymysql.connect('localhost', 'root', '20121513zal', 'esports')
 cursor = db.cursor()
 db.set_charset('utf8')
 
@@ -118,7 +118,7 @@ def init(db, cursor):
     cursor.execute(sql)
 
 
-init(db,cursor)
+#init(db,cursor)
 # --------------------------------------- user_info ------------------------------------------
 # by MinstrelZal
 # 2017-12-22
@@ -347,7 +347,6 @@ def User_List():
 # 2017-12-22
 
 def Add_ESport(name, etype):
-
     sql = 'call add_esport("%s","%s")' % (name, etype)
     try:
         cursor.execute(sql)
@@ -962,7 +961,7 @@ def Add_Club_ESport(club_id,esport_id):
         return 1
     return 0
 
-def Delete_Club(club_id, esport_id):
+def Delete_Club(club_id):
     sql = 'DELETE FROM club_info WHERE id=%d;' % club_id
     try:
         cursor.execute(sql)
@@ -1581,6 +1580,3 @@ def Game_Competitor_List():
     print(game_competitorlist)
     return game_competitorlist
 
-
-
-Add_ESport("英雄联盟","MOBA")
